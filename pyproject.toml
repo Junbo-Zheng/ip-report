@@ -1,0 +1,68 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2026 Junbo Zheng
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "ip-report"
+dynamic = ["version"]
+description = "Cross-platform CLI that emails you this machine's IP addresses on boot or on a schedule"
+readme = "README.md"
+license = { text = "Apache-2.0" }
+requires-python = ">=3.10"
+authors = [
+    { name = "Junbo Zheng" },
+]
+classifiers = [
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "tomli>=2.0; python_version < '3.11'",
+]
+
+[project.scripts]
+ip-report = "ip_report.cli:main"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov",
+    "ruff",
+    "build",
+    "twine",
+]
+
+[project.urls]
+Homepage = "https://github.com/Junbo-Zheng/ip-report"
+Issues = "https://github.com/Junbo-Zheng/ip-report/issues"
+
+# Single source of truth for the version: read it from __init__.py so the
+# number lives in exactly one place (no pyproject/__init__ drift on bumps).
+[tool.hatch.version]
+path = "src/ip_report/__init__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/ip_report"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py310"
+
+[tool.ruff.lint]
+# E+F = pycodestyle errors + pyflakes (the flake8 defaults); I = isort import sorting
+select = ["E", "F", "I"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v --strict-markers"
+# Import the package straight from src/ so `pytest` runs against the working
+# tree with no build/install step, and always shadows any site-packages copy.
+# (Requires pytest >= 7.) The installed-wheel check is delegated to CI.
+pythonpath = ["src"]
